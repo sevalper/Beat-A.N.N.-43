@@ -11,4 +11,22 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Dibujado.unity
     guid: 63cfff868613d3b429ecf95c5636ea4b
+  - enabled: 1
+    path: Assets/Circuito1.unity
+    guid: 9e01726a406dc2244935169cf60a9594
+  - enabled: 1
+    path: Assets/Circuito2.unity
+    guid: 4f577b4c2f68baa4f85bd408e967a673
+  - enabled: 1
+    path: Assets/Circuito3.unity
+    guid: a138aa335e7c8fa48889353c9943bc9e
+  - enabled: 1
+    path: Assets/Circuito4.unity
+    guid: 657e8466da8a9c346862eb3dc1a92ab0
+  - enabled: 1
+    path: Assets/Tutorial.unity
+    guid: 2b1afd7ea3bdb3d47b51eefa4102fda1
+  - enabled: 1
+    path: Assets/Training.unity
+    guid: c77e70d8c2b333549939dc309d48baaa
   m_configObjects: {}

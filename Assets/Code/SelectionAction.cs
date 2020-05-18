@@ -15,8 +15,11 @@ public class SelectionAction : MonoBehaviour
 
     public void SetActual(Cell c) { _actual = c; }
 
+    public bool canInteract;
+
     void Update()
     {
+        if (!canInteract) return;
         if (Input.GetMouseButton(0))
         {
             RaycastHit hit;

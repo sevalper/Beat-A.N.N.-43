@@ -7,7 +7,7 @@ public class Cell : MonoBehaviour
 {
     public static event Action<Cell> StartCellNeighbourSelected;
 
-    private int ID;
+    [SerializeField]private int ID;
     private bool _selected;
     private bool _start;
     private List<Cell> _neighbourCells;
@@ -39,6 +39,7 @@ public class Cell : MonoBehaviour
 
     public bool GetSelected() => _selected;
     public string SetSelected(bool s) { _selected = s;  return (ID + ""); }
+    public string GetID() => ID.ToString();
 
     public List<Cell> GetNeighbourCell() => _neighbourCells;
     public void SetNeighbourCells(List<Cell> cells)

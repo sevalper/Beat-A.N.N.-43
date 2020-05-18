@@ -11,12 +11,28 @@ public class Grid : MonoBehaviour
     [SerializeField] private SelectionAction selAct;
     [SerializeField] private Manager manager;
     [SerializeField] private GameObject buttonContainer;
+    [SerializeField] private GameObject floor;
 
     private int min = 1;
 
     private Cell[,] grid;
 
     public void SetInit() { selAct.SetActual(grid[3, 3]); }
+
+    public Cell GetCell(string id)
+    {
+        for (int x = 0; x < gridSizeX; x++)
+        {
+            for (int y = 0; y < gridSizeY; y++)
+            {
+                if (grid[x, y].GetID().Equals(id))
+                {
+                    return grid[x, y];
+                }
+            }
+        }
+        return null;
+    }
 
     private void OnEnable()
     {
@@ -131,6 +147,7 @@ public class Grid : MonoBehaviour
 
     private void UP()
     {
+        floor.SetActive(true);
 
         for (int x = 0; x < gridSizeX; x++)
         {

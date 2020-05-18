@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Fungus;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Manager : MonoBehaviour
 {
@@ -15,6 +17,9 @@ public class Manager : MonoBehaviour
     [SerializeField] private GameObject ResumeMenuContainer;
     [SerializeField] private Cinemachine.CinemachineVirtualCamera followCamera, zenitalCamera;
     [SerializeField] private Cinemachine.CinemachineBrain cameraBrain;
+    [SerializeField] private Text failText;
+
+    [SerializeField] private Flowchart fc;
 
     public Cinemachine.CinemachineBlendDefinition cameraDefinition;
 
@@ -25,7 +30,7 @@ public class Manager : MonoBehaviour
     private Vector3 _pointToView;
 
     private string circuitName;
-    private List<float> _circuitPoints;
+    private List<float> _circuitPoints = new List<float>();
 
     Dictionary<string, string> _circuitsNameDictionary = new Dictionary<string, string>();
     static readonly string DICTIONARY = "Circuits";
@@ -35,6 +40,21 @@ public class Manager : MonoBehaviour
 
     private void Start()
     {
+        if (!PlayerPrefs.HasKey("Dibujado"))
+        {
+            if (fc != null)
+            {
+                fc.ExecuteBlock("Intro");
+                PlayerPrefs.SetInt("Dibujado", 1);
+            }
+
+        }
+        else
+        {
+            if (fc != null)
+                PlayerPrefs.SetInt("Dibujado", PlayerPrefs.GetInt("Dibujado") + 1);
+        }
+
         followCamera.enabled = false;
         zenitalCamera.enabled = true;
 
@@ -43,6 +63,9 @@ public class Manager : MonoBehaviour
         if (SaveAndLoad.SaveExists(DICTIONARY))
             _circuitsNameDictionary = SaveAndLoad.Load<Dictionary<string, string>>(DICTIONARY);
     }
+
+    [ContextMenu("DeletePlayerPrefs")]
+    public void Delete() { PlayerPrefs.DeleteKey("Dibujado"); }
 
     public void SaveNewDataDictionary(string name, string data)
     {
@@ -80,6 +103,11 @@ public class Manager : MonoBehaviour
                 return true;
         }
         return false;
+    }
+
+    internal Text getFailText()
+    {
+        return failText;
     }
 
     private void OnEnable()
@@ -130,7 +158,13 @@ public class Manager : MonoBehaviour
     public void Respawn()
     {
         _pointToView.y = pos.y;
-        var botInst = Instantiate(bot, pos, Quaternion.LookRotation(_pointToView - pos, Vector3.up));
+
+        Debug.Log(_pointToView);
+
+        //var botInst = Instantiate(bot, pos, Quaternion.LookRotation(_pointToView - pos, Vector3.up));
+        var botInst = Instantiate(bot, pos, Quaternion.identity);
+        botInst.transform.LookAt(_pointToView);
+        botInst.GetComponentInChildren<Animator>().SetBool("Running", true);
         Brain brain = botInst.GetComponent<Brain>();
         brain._isAleatoryCircuit = true;
         brain.currentAleatoryCircuitName = circuitName;
@@ -139,19 +173,23 @@ public class Manager : MonoBehaviour
         FollowInstance();
     }
 
+    public void SetPointToView(Vector3 p)
+    {
+        _pointToView = p;
+    }
+
     private void FollowInstance()
     {
         if (_currentBot == null)
             return;
 
-        Vector3 newPosition = new Vector3(0f, 0.05f,-0.5f);
+        Vector3 newPosition = new Vector3(0f, 0.11f,-0.5f);
 
         var transposer = followCamera.GetCinemachineComponent<Cinemachine.CinemachineTransposer>();
         transposer.m_FollowOffset = newPosition;
         followCamera.m_Lens.FieldOfView = 37f;
         followCamera.m_Follow = _currentBot.transform;
         followCamera.m_LookAt = _currentBot.transform;
-        
     }
 
     private void StartCellNeighbourSelected(Cell cellScript)
@@ -177,4 +215,14 @@ public class Manager : MonoBehaviour
             _isFinished = true;
         }
     }
+
+    public void FinishedTrainingPath() { FinishPath(); }
+
+    public void Help()
+    {
+        Time.timeScale = 25f;
+        Invoke(nameof(ExecuteHelp), 1);
+    }
+
+    private void ExecuteHelp() { fc.ExecuteBlock("Help"); }
 }
